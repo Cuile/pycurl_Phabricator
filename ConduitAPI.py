@@ -7,105 +7,107 @@ import json
 import pycurl
 import certifi
 
-url = token = method = ""
-data = {}
 
-
-def setUrl(u):
-    global url
-    url = u
-
-
-# print("setUrl : %s" % (url))
-
-def setToken(t):
-    global token
-    token = t
-    print("setToken : %s" % (token))
-    setData({'api.token': token})
-
-
-def setMethod(m):
-    global url, method
-    method = url + m
-
-
-# print("setMethod : %s" % (method))
-
-def setData(d):
-    global data
-    data.update(d)
-
-
-# print("setData : %r" % (data))
-
-def clearData():
-    global data
+class conduit_api():
+    url = None
+    token = None
+    method = None
     data = {}
-    setData({'api.token': token})
 
+    def set_url(self, u):
+        self.url = u
+        # print("setUrl : %s" % (self.url))
 
-def callAPI():
-    global method, data
+    def set_token(self, t):
+        self.token = t
+        self.set_data({'api.token': self.token})
+        # print("setToken : %s" % (self.token))
 
-    buffer = BytesIO()
+    def set_method(self, m):
+        self.method = self.url + m
+        # print("setMethod : %s" % (self.method))
 
-    c = pycurl.Curl()
+    def set_data(self, d):
+        self.data.update(d)
+        # print("setData : %r" % (self.data))
 
-    c.setopt(c.CAINFO, certifi.where())
-    # c.setopt(c.VERBOSE, True)
-    c.setopt(c.POST, True)
-    c.setopt(c.POSTFIELDS, urllib.parse.urlencode(data))
-    # print(urllib.parse.urlencode(data))
+    def clear_data(self):
+        self.data = {}
+        self.set_data({'api.token': self.token})
 
-    c.setopt(c.URL, method)
-    c.setopt(c.WRITEFUNCTION, buffer.write)
+    def call_api(self):
+        buffer = BytesIO()
 
-    c.perform()
-    c.close()
+        c = pycurl.Curl()
 
-    # print("buffer : %s" % (buffer.getvalue()))
-    b = buffer.getvalue().decode("utf-8")
-    # print("callAPI : %s" % (b))
-    clearData()
+        c.setopt(c.CAINFO, certifi.where())
+        # c.setopt(c.VERBOSE, True)
+        c.setopt(c.POST, True)
+        c.setopt(c.POSTFIELDS, urllib.parse.urlencode(self.data))
+        # print(urllib.parse.urlencode(data))
 
-    return json.loads(b)
+        c.setopt(c.URL, self.method)
+        c.setopt(c.WRITEFUNCTION, buffer.write)
 
+        c.perform()
+        c.close()
 
-def getUserPHIDForUserName(userName):
-    # print('user.query'.center(40,'='))
-    setMethod("user.query")
-    # print(userName)
-    u = {'usernames[0]': userName}
-    setData(u)
-    r = callAPI()['result'][0]['phid']
-    print("User Name is: %s, PHID is: %s" % (userName, r))
-    return
+        # print("buffer : %s" % (buffer.getvalue()))
+        b = buffer.getvalue().decode("utf-8")
+        # print("call_api : %s" % (b))
+        self.clear_data()
 
+        return json.loads(b)
 
-def getProjectPHIDForName(names):
-    # print('project.query'.center(40,'='))
-    setMethod("project.query")
-    # print(names)
-    n = {'names[0]': names}
-    setData(n)
-    r = list(callAPI()['result']['data'])[0]
-    print("Project Name is: %s, PHID is: %s" % (names, r))
-    return r
+    def get_userPHID_for_username(self, userName):
+        # print('user.query'.center(40,'='))
+        self.set_method("user.query")
+        # print(userName)
+        self.set_data({'usernames[0]': userName})
+        r = self.call_api()['result'][0]['phid']
+        # print("User Name is: %s, PHID is: %s" % (userName, r))
+        return r
 
+    def get_projectPHID_for_name(self, name):
+        # print('project.query'.center(40,'='))
+        self.set_method("project.query")
+        # print(names)
+        self.set_data({'names[0]': name})
+        r = list(self.call_api()['result']['data'])[0]
+        # print("Project Name is: %s, PHID is: %s" % (name, r))
+        return r
 
-def getTaskPHIDsForOwnerAuthorProject(ownerPHID, authorPHID, projectPHID):
-    print('maniphest.query'.center(40, '='))
-    setMethod("maniphest.query")
-    o = {'ownerPHIDs[0]': ownerPHID}
-    setData(o)
-    a = {'authorPHIDs[0]': authorPHID}
-    setData(a)
-    p = {'projectPHIDs[0]': projectPHID}
-    setData(p)
-    # l = {'limit':1}
-    # setData(l)
-    return list(callAPI()['result'])
+    # QueryKey      名称      内置
+    # Q841s.iJ.164  反馈      自定义
+    # assigned      已指派     内置
+    # authored      我创建的    内置
+    # subscribed    已订阅     内置
+    # open          已开启任务   内置
+    # all           所有任务    内置
+
+    # OrderKey  详情                      Columns
+    # priority  优先级                     priority, subpriority, id
+    # updated   更新日期（最新的优先）         updated, id
+    # outdated  更新日期（最早的优先）         -updated, -id
+    # newest    Creation(Newest First)      id
+    # oldest    Creation(Oldest First)      -id
+    # title     标题                      title, id
+    def get_taskPHIDs_for_projectPHID(self, queryKey, projectPHID):
+        self.set_method('maniphest.search')
+        self.set_data({'queryKey[0]': queryKey})
+        self.set_data({'projectPHIDs[0]': projectPHID})
+        self.set_data({'order[0]': 'updated'})
+        self.set_data({'order[1]': 'id'})
+        print('get_taskPHIDs_for_projectPHID'.center(40, '='))
+        return self.call_api()['result']
+
+    def get_taskPHIDs_for_ownerPHID_authorPHID_projectPHID(self, ownerPHID, authorPHID, projectPHID):
+        print('maniphest.query'.center(40, '='))
+        self.set_method("maniphest.query")
+        self.set_data({'ownerPHIDs[0]': ownerPHID})
+        self.set_method({'authorPHIDs[0]': authorPHID})
+        self.set_method({'projectPHIDs[0]': projectPHID})
+        return list(self.call_api()['result'])
 
 
 # 注意status以PH设置为准
@@ -183,9 +185,9 @@ def setCreateTask(title, description, ownerPHID, viewPolicy, editPolicy, project
     return callAPI()['result']['phid']
 
 # 查询个人信息
-# print('callAPI'.center(40,'='))
+# print('call_api'.center(40,'='))
 # ConduitAPI.setMethod("user.whoami")
-# ConduitAPI.callAPI()
+# ConduitAPI.call_api()
 
 # data = {'api.token':token}
 # res = Conduit_API(method,data)
