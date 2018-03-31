@@ -16,6 +16,7 @@ class Conduit(object):
     data = {}
 
     def set_url(self, u):
+        """设置Phabricator平台Conduit API的地址"""
         self.url = u
         # print("setUrl : %s" % (self.url))
 
