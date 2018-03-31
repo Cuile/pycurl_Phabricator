@@ -8,7 +8,7 @@ import pycurl
 import certifi
 
 
-class conduit_api():
+class Conduit(object):
     url = None
     token = None
     method = None
@@ -58,6 +58,12 @@ class conduit_api():
         self.clear_data()
 
         return json.loads(b)
+
+    class user(object):
+        @property
+        def whoami(self):
+            Conduit.set_method("user.whoami")
+            return Conduit.call_api()
 
     def get_userPHID_for_username(self, userName):
         # print('user.query'.center(40,'='))
