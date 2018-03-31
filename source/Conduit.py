@@ -9,7 +9,9 @@ import certifi
 
 
 class Conduit(object):
-    """使用pycurl对Phabricator进行访问"""
+    """
+    使用pycurl对Phabricator进行访问
+    """
     url = None
     token = None
     method = None
