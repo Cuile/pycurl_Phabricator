@@ -1,5 +1,6 @@
-﻿#!/usr/bin/python
+﻿# !/usr/bin/python
 # -*- coding: utf-8 -*-
+
 from io import BytesIO
 import urllib.parse
 import json
