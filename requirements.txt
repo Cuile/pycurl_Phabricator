@@ -1,7 +1,0 @@
-#
-####### example-requirements.txt #######
-#
-###### Requirements with Version Specifiers ######
-#
-pycurl == 7.43.0.1
-certifi == 2018.1.18
