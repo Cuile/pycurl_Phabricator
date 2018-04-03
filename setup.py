@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="Pycurl_Phabricator",
-    packages=['source'],
+    packages=['Conduit'],
     version="0.1",
 
     # Project uses reStructuredText, so ensure that the docutils get
