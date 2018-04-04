@@ -6,7 +6,7 @@ import pycurl
 import certifi
 
 
-class base(object):
+class _base(object):
     """
     使用pycurl对Phabricator进行访问
     """

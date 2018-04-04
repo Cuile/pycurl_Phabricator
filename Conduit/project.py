@@ -1,6 +1,3 @@
-from .base import base
-
-
 class project(object):
     def __init__(self, ph):
         self.base = ph

@@ -1,11 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from Conduit import *
+import Conduit
 
-ph = base()
+ph = Conduit._base()
 ph.set_url("http://ph.feinno.com/api/")
-project(ph).search()
+ph.set_token("api-vxzwb2kfzapq63il246w2rkv64qb")
+Conduit.project(ph).search()
+print(Conduit.user(ph).whoami())
 
+exit()
 
 # ph.set_token('')
 # ph.get_userPHID_for_username('cuile')
