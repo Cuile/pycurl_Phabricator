@@ -30,7 +30,8 @@ def flatten(items, ignore_types=(str, bytes)):
         # 如果元素是一个序列，且不是str,bytes类型
         if isinstance(x, Iterable) and not isinstance(x, ignore_types):
             yield from flatten(x)
-            path.pop()
         else:
             yield {'.'.join(path): x}
-            path.pop()
+
+        # 循环结束，删除当前路径
+        path.pop()
