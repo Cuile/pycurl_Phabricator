@@ -1,8 +1,6 @@
-class user(object):
-    def __init__(self, ph):
-        self._base = ph
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-    def whoami(self):
-        self._base.set_method('user.whoami')
-        self._base.clear_data()
-        return self._base.call_method()
+
+def whoami(ph, data={}):
+    return ph.call_method('user.whoami', data)

@@ -3,4 +3,4 @@
 
 
 def search(ph, data={}):
-    return ph.call_method('project.search', data)
+    return ph.call_method('maniphest.search', data)
