@@ -7,7 +7,7 @@ setup(
 
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
-    install_requires=['pycurl == 7.43.0.1', 'certifi == 2018.1.18'],
+    install_requires=['pycurl == 7.43.0.1', 'certifi == 2018.1.18', 'sequence2hash'],
 
     # metadata for upload to PyPI
     author="Cuile",
