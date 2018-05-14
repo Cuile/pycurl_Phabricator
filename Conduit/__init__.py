@@ -36,21 +36,16 @@ class API(object):
         buffer = BytesIO()
 
         c = pycurl.Curl()
-
         c.setopt(c.CAINFO, certifi.where())
         # c.setopt(c.VERBOSE, True)
         c.setopt(c.POST, True)
         c.setopt(c.POSTFIELDS, urllib.parse.urlencode(self.__method_data))
-        print(urllib.parse.urlencode(self.__method_data, safe='/[]', quote_via=urllib.parse.quote))
+        # print(urllib.parse.urlencode(self.__method_data, safe='/[]', quote_via=urllib.parse.quote))
         c.setopt(c.URL, self.url + method_name)
         c.setopt(c.WRITEFUNCTION, buffer.write)
-
         c.perform()
         c.close()
 
-        # print("buffer : %s" % (buffer.getvalue()))
         b = buffer.getvalue().decode("utf-8")
-        # print("call_api : %s" % (b))
-        # self.__reset_data()
 
-        return json.loads(b)
+        return json.dumps(json.loads(b), ensure_ascii=False)
