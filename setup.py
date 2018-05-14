@@ -12,7 +12,7 @@ setup(
 
     url="https://github.com/Cuile/pycurl_Phabricator",
     packages=['Conduit'],
-    version="0.1",
+    version="0.2.1",
     install_requires=['pycurl == 7.43.0.1', 'certifi == 2018.1.18', 'sequence2hash'],
 
     author="Cuile",
