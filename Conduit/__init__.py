@@ -30,7 +30,7 @@ class API(object):
             else:
                 self.__method_data.update({x['key'][0] + '[' + ']['.join(x['key'][1:]) + ']': x['value']})
 
-    def call_method(self, method_name, method_data):
+    def call_method(self, method_name, method_data, result_type='dict'):
         self.__set_data(method_data)
 
         buffer = BytesIO()
@@ -48,4 +48,7 @@ class API(object):
 
         b = buffer.getvalue().decode("utf-8")
 
-        return json.dumps(json.loads(b), ensure_ascii=False)
+        if result_type == 'dict':
+            return json.loads(b)
+        else:
+            return json.dumps(json.loads(b), ensure_ascii=False)
